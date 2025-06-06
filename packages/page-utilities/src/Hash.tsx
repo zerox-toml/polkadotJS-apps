@@ -4,8 +4,8 @@
 import React, { useCallback, useState } from 'react';
 
 import { Input, Output, Static } from '@polkadot/react-components';
-import { hexToU8a, isHex, stringToU8a } from '@polkadot/util';
-import { blake2AsHex } from '@polkadot/util-crypto';
+import { hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot/util';
+import { sha256AsU8a } from '@polkadot/util-crypto';
 
 import { useTranslation } from './translate.js';
 
@@ -23,7 +23,7 @@ function Hash ({ className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [{ data, hash, isHexData }, setState] = useState<State>({
     data: '',
-    hash: blake2AsHex(stringToU8a(''), 256),
+    hash: u8aToHex(sha256AsU8a(stringToU8a(''))),
     isHexData: false
   });
 
@@ -33,12 +33,11 @@ function Hash ({ className }: Props): React.ReactElement<Props> {
 
       setState({
         data,
-        hash: blake2AsHex(
+        hash: u8aToHex(sha256AsU8a(
           isHexData
             ? hexToU8a(data)
-            : stringToU8a(data),
-          256
-        ),
+            : stringToU8a(data)
+        )),
         isHexData
       });
     },
